@@ -94,7 +94,7 @@ StyledRect {
     }
     DragHandler {
         id: workspaceDragHandler
-        enabled: false
+
         target: null
         onActiveChanged: {
             if (!active) {
@@ -314,7 +314,6 @@ StyledRect {
 
                 DragHandler {
                     id: dragHandler
-                    enabled: false
 
                     onActiveChanged: {
                         if (active) {

@@ -28,7 +28,7 @@ https://github.com/user-attachments/assets/38b24e7f-fdd9-43db-872b-8c0ac23a44fd
 3. **Vị trí thông báo chuẩn:** Vị trí mặc định được đặt tại góc trên bên phải (`top-right`) tối ưu hiển thị.
 4. **Bộ công cụ khôi phục tùy biến:** Đi kèm lệnh độc quyền `caelestia-apply-customizations` giúp khôi phục toàn bộ tinh chỉnh ngay lập tức sau mỗi lần cập nhật upstream.
 5. **Tối ưu chuyển cửa sổ (Alt + Tab):** Phân tách rõ ràng phím tắt, `Alt + Tab` chuyển nhanh giữa các cửa sổ gọn gàng không bị bung choáng hết màn hình lớn, trong khi `Meta + Tab` (hoặc `Super + Tab`) mở giao diện Tổng quan (Overview) toàn màn hình khi cần quản lý đa không gian làm việc.
-6. **Trải nghiệm Overview mượt mà:** Khóa thao tác kéo thả (drag) gây giật lag/nhận diện nhầm trên thumbnail màn hình nhỏ; chuyển không gian làm việc ngay lập tức chỉ với 1 click mà không thoát Overview, và bấm vào chính không gian làm việc hiện tại để đóng Overview.
+6. **Trải nghiệm Overview mượt mà:** Chuyển không gian làm việc ngay lập tức chỉ với 1 click mà không thoát Overview, và bấm vào chính không gian làm việc hiện tại để đóng Overview.
 
 ---
 

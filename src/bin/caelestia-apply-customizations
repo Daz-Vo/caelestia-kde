@@ -145,27 +145,7 @@ if os.path.exists(keybinds_path):
     else:
         print("[✓] keybinds.json đã có overview = Meta+Tab")
 
-# 6. modules/overview/components/workspaces/Workspace.qml: Tối ưu phản hồi click, chuyển workspace không thoát, click workspace hiện tại để thoát
-ws_target1 = """    DragHandler {
-        id: workspaceDragHandler
-
-        target: null"""
-ws_repl1 = """    DragHandler {
-        id: workspaceDragHandler
-        enabled: false
-        target: null"""
-patch_file("modules/overview/components/workspaces/Workspace.qml", ws_target1, ws_repl1, "Workspace.qml: workspaceDragHandler dragThreshold")
-
-ws_target2 = """                DragHandler {
-                    id: dragHandler
-
-                    onActiveChanged: {"""
-ws_repl2 = """                DragHandler {
-                    id: dragHandler
-                    enabled: false
-
-                    onActiveChanged: {"""
-patch_file("modules/overview/components/workspaces/Workspace.qml", ws_target2, ws_repl2, "Workspace.qml: window dragHandler dragThreshold")
+# 6. modules/overview/components/workspaces/Workspace.qml: Chuyển workspace không thoát, click workspace hiện tại để thoát
 
 ws_click_target = """        onClicked: {
             if (active) {
