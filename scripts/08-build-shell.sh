@@ -596,6 +596,7 @@ install -m 755 "$BUNDLE_DIR/src/bin/caelestia" ~/.local/bin/caelestia
 install -m 755 "$BUNDLE_DIR/src/bin/caelestia-color" ~/.local/bin/caelestia-color
 install -m 755 "$BUNDLE_DIR/src/bin/caelestia-update" ~/.local/bin/caelestia-update
 install -m 755 "$BUNDLE_DIR/src/bin/caelestia-check-updates" ~/.local/bin/caelestia-check-updates
+[[ -f "$BUNDLE_DIR/src/bin/caelestia-apply-customizations" ]] && install -m 755 "$BUNDLE_DIR/src/bin/caelestia-apply-customizations" ~/.local/bin/caelestia-apply-customizations
 ok "Caelestia bin wrappers installed to ~/.local/bin"
 
 info "Installing the update-checker units..."
@@ -644,6 +645,19 @@ else
 fi
 
 record_installed_revision "$BUNDLE_DIR" "$HOME/.config/quickshell/caelestia" || true
+# Deploy customized shell files and configurations
+if [[ -d "$BUNDLE_DIR/shell" && -d "$HOME/.config/quickshell/caelestia" ]]; then
+    for f in modules/drawers/Panels.qml services/Kwin.qml modules/osd/Wrapper.qml; do
+        if [[ -f "$BUNDLE_DIR/shell/$f" ]]; then
+            mkdir -p "$(dirname "$HOME/.config/quickshell/caelestia/$f")"
+            cp "$BUNDLE_DIR/shell/$f" "$HOME/.config/quickshell/caelestia/$f"
+        fi
+    done
+fi
+if [[ ! -f "$HOME/.config/caelestia/shell.json" ]]; then
+    mkdir -p "$HOME/.config/caelestia"
+    echo "{\"notifs\":{\"position\":\"top-right\"}}" > "$HOME/.config/caelestia/shell.json"
+fi
 
 # Outside the deploy guard on purpose: CAELESTIA_SKIP_DEPLOY is about the config files this
 # step deploys, and this is the assets an older install left behind.

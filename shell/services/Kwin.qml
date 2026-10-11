@@ -470,8 +470,15 @@ Singleton {
         return root.monitorNames().join(", ");
     }
 
+    property bool initialized: false
+    Timer {
+        interval: 1500
+        running: true
+        onTriggered: root.initialized = true
+    }
+
     onCapsLockChanged: {
-        if (!GlobalConfig.utilities.toasts.capsLockChanged)
+        if (!root.initialized || !GlobalConfig.utilities.toasts.capsLockChanged)
             return;
         Toaster.toast(
             capsLock ? qsTr("Caps lock enabled") : qsTr("Caps lock disabled"),
@@ -481,7 +488,7 @@ Singleton {
     }
 
     onNumLockChanged: {
-        if (!GlobalConfig.utilities.toasts.numLockChanged)
+        if (!root.initialized || !GlobalConfig.utilities.toasts.numLockChanged)
             return;
         Toaster.toast(
             numLock ? qsTr("Num lock enabled") : qsTr("Num lock disabled"),

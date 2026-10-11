@@ -23,7 +23,17 @@ Item {
     property bool sourceMuted
     property real brightness
 
+    property bool initialized: false
+
+    Timer {
+        interval: 1500
+        running: true
+        onTriggered: root.initialized = true
+    }
+
     function show(): void {
+        if (!root.initialized)
+            return;
         visibilities.osd = true;
         timer.restart();
     }

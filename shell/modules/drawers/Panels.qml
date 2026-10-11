@@ -209,9 +209,12 @@ Item {
         readonly property string _notifH: root.notifPosition.split("-")[1]
         property string vAnchor: _notifV
         property string hAnchor: _notifH
-        property bool shouldPush: root.popoutIntersectsRight && !popoutsWrapper.content.isDockPopout && !sidebar.visible
+        property bool shouldPush: root.popoutIntersectsRight && !popoutsWrapper.content.isDockPopout && !sidebar.visible && (bar.position === _notifV)
 
         readonly property real _pushOffset: shouldPush ? (popoutsWrapper.implicitHeight + Tokens.spacing.extraLarge) : 0
+        readonly property real _utilitiesPushOffset: (utilities.visible && utilities.offsetScale < 1 && _notifV === "top" && _notifH === "right" && bar.position === "bottom")
+            ? ((utilities.implicitHeight - root.borderThickness) * (1 - utilities.offsetScale))
+            : 0
 
         visibilities: root.visibilities
         screen: root.screen
@@ -229,7 +232,7 @@ Item {
             return Math.max(0, (parent.width - implicitWidth) / 2);
         }
         y: {
-            if (_notifV === "top") return _pushOffset;
+            if (_notifV === "top") return _pushOffset + _utilitiesPushOffset;
             return Math.max(0, parent.height - implicitHeight - _pushOffset);
         }
     }

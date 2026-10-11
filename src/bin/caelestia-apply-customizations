@@ -1,0 +1,148 @@
+#!/usr/bin/env python3
+import os, sys, json
+
+QS_DIR = os.path.expanduser('~/.config/quickshell/caelestia')
+CONFIG_DIR = os.path.expanduser('~/.config/caelestia')
+
+def patch_file(rel_path, target, replacement, desc):
+    full_path = os.path.join(QS_DIR, rel_path)
+    if not os.path.exists(full_path):
+        print(f"[-] Bỏ qua {desc}: không tìm thấy {full_path}")
+        return False
+    with open(full_path, "r", encoding="utf-8") as f:
+        content = f.read()
+    if replacement in content:
+        print(f"[✓] {desc}: đã được áp dụng.")
+        return True
+    if target in content:
+        content = content.replace(target, replacement, 1)
+        with open(full_path, "w", encoding="utf-8") as f:
+            f.write(content)
+        print(f"[✓] Áp dụng thành công: {desc}")
+        return True
+    else:
+        print(f"[!] Không tìm thấy đoạn code gốc của: {desc}")
+        return False
+
+print("=== Đang áp dụng các tùy chỉnh Caelestia ===")
+
+# 1. Panels.qml: Tránh nhảy thông báo và dính liền khối với Utilities
+panels_target = "        readonly property real _pushOffset: shouldPush ? (popoutsWrapper.implicitHeight + Tokens.spacing.extraLarge) : 0"
+panels_replacement = """        readonly property real _pushOffset: shouldPush ? (popoutsWrapper.implicitHeight + Tokens.spacing.extraLarge) : 0
+        readonly property real _utilitiesPushOffset: (utilities.visible && utilities.offsetScale < 1 && _notifV === "top" && _notifH === "right" && bar.position === "bottom")
+            ? ((utilities.implicitHeight - root.borderThickness) * (1 - utilities.offsetScale))
+            : 0"""
+patch_file("modules/drawers/Panels.qml", panels_target, panels_replacement, "Panels.qml: định nghĩa _utilitiesPushOffset")
+
+panels_y_target = """        y: {
+            if (_notifV === "top") return _pushOffset;
+            return Math.max(0, parent.height - implicitHeight - _pushOffset);
+        }"""
+panels_y_replacement = """        y: {
+            if (_notifV === "top") return _pushOffset + _utilitiesPushOffset;
+            return Math.max(0, parent.height - implicitHeight - _pushOffset);
+        }"""
+patch_file("modules/drawers/Panels.qml", panels_y_target, panels_y_replacement, "Panels.qml: vị trí notifications.y")
+
+push_cond_target = "property bool shouldPush: root.popoutIntersectsRight && !popoutsWrapper.content.isDockPopout && !sidebar.visible"
+push_cond_replacement = "property bool shouldPush: root.popoutIntersectsRight && !popoutsWrapper.content.isDockPopout && !sidebar.visible && (bar.position === _notifV)"
+patch_file("modules/drawers/Panels.qml", push_cond_target, push_cond_replacement, "Panels.qml: điều kiện shouldPush theo trục dọc")
+
+# 2. Kwin.qml: Chặn toast Num Lock / Caps Lock khi khởi động
+kwin_target = """    onCapsLockChanged: {
+        if (!GlobalConfig.utilities.toasts.capsLockChanged)
+            return;
+        Toaster.toast(
+            capsLock ? qsTr("Caps lock enabled") : qsTr("Caps lock disabled"),
+            capsLock ? qsTr("Caps lock is currently enabled") : qsTr("Caps lock is currently disabled"),
+            capsLock ? "keyboard_capslock_badge" : "keyboard_capslock"
+        );
+    }
+
+    onNumLockChanged: {
+        if (!GlobalConfig.utilities.toasts.numLockChanged)
+            return;
+        Toaster.toast(
+            numLock ? qsTr("Num lock enabled") : qsTr("Num lock disabled"),
+            numLock ? qsTr("Num lock is currently enabled") : qsTr("Num lock is currently disabled"),
+            numLock ? "looks_one" : "timer_1"
+        );
+    }"""
+kwin_replacement = """    property bool initialized: false
+    Timer {
+        interval: 1500
+        running: true
+        onTriggered: root.initialized = true
+    }
+
+    onCapsLockChanged: {
+        if (!root.initialized || !GlobalConfig.utilities.toasts.capsLockChanged)
+            return;
+        Toaster.toast(
+            capsLock ? qsTr("Caps lock enabled") : qsTr("Caps lock disabled"),
+            capsLock ? qsTr("Caps lock is currently enabled") : qsTr("Caps lock is currently disabled"),
+            capsLock ? "keyboard_capslock_badge" : "keyboard_capslock"
+        );
+    }
+
+    onNumLockChanged: {
+        if (!root.initialized || !GlobalConfig.utilities.toasts.numLockChanged)
+            return;
+        Toaster.toast(
+            numLock ? qsTr("Num lock enabled") : qsTr("Num lock disabled"),
+            numLock ? qsTr("Num lock is currently enabled") : qsTr("Num lock is currently disabled"),
+            numLock ? "looks_one" : "timer_1"
+        );
+    }"""
+patch_file("services/Kwin.qml", kwin_target, kwin_replacement, "Kwin.qml: Startup guard cho Num Lock / Caps Lock")
+
+# 3. osd/Wrapper.qml: Chặn OSD âm thanh & độ sáng khi khởi động
+osd_target = """    function show(): void {
+        visibilities.osd = true;
+        timer.restart();
+    }"""
+osd_replacement = """    property bool initialized: false
+
+    Timer {
+        interval: 1500
+        running: true
+        onTriggered: root.initialized = true
+    }
+
+    function show(): void {
+        if (!root.initialized)
+            return;
+        visibilities.osd = true;
+        timer.restart();
+    }"""
+patch_file("modules/osd/Wrapper.qml", osd_target, osd_replacement, "osd/Wrapper.qml: Startup guard cho OSD âm lượng / độ sáng")
+
+# 4. shell.json: Đảm bảo thông báo ở góc trên bên phải
+shell_json_path = os.path.join(CONFIG_DIR, "shell.json")
+if os.path.exists(shell_json_path):
+    with open(shell_json_path, "r", encoding="utf-8") as f:
+        data = json.load(f)
+    if "notifs" not in data:
+        data["notifs"] = {}
+    if data["notifs"].get("position") != "top-right":
+        data["notifs"]["position"] = "top-right"
+        with open(shell_json_path, "w", encoding="utf-8") as f:
+            json.dump(data, f, indent=4)
+        print("[✓] Đã lưu notifs.position = top-right trong shell.json")
+    else:
+        print("[✓] shell.json đã có notifs.position = top-right")
+
+# 5. keybinds.json: Đảm bảo Win + Tab mở Caelestia Overview
+keybinds_path = os.path.join(CONFIG_DIR, "keybinds.json")
+if os.path.exists(keybinds_path):
+    with open(keybinds_path, "r", encoding="utf-8") as f:
+        kdata = json.load(f)
+    if kdata.get("overview") != "Meta+Tab":
+        kdata["overview"] = "Meta+Tab"
+        with open(keybinds_path, "w", encoding="utf-8") as f:
+            json.dump(kdata, f, indent=2)
+        print("[✓] Đã lưu overview = Meta+Tab trong keybinds.json")
+    else:
+        print("[✓] keybinds.json đã có overview = Meta+Tab")
+
+print("=== Hoàn tất áp dụng tùy chỉnh ===")

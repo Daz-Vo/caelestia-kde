@@ -20,7 +20,7 @@ class NotifsConfig : public settings::ObjectNode {
     CONFIG_GLOBAL_PROPERTY(bool, actionOnClick, false)
     CONFIG_PROPERTY(int, groupPreviewNum, 3)
     CONFIG_PROPERTY(bool, openExpanded, false)
-    CONFIG_GLOBAL_PROPERTY(QString, position, QStringLiteral("auto"))
+    CONFIG_GLOBAL_PROPERTY(QString, position, QStringLiteral("top-right"))
     CONFIG_GLOBAL_PROPERTY(int, maxPopups, 8)
     CONFIG_GLOBAL_PROPERTY(int, maxNotifs, 50)
 };
