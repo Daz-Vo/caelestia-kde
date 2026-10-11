@@ -94,7 +94,7 @@ StyledRect {
     }
     DragHandler {
         id: workspaceDragHandler
-
+        enabled: false
         target: null
         onActiveChanged: {
             if (!active) {
@@ -110,14 +110,6 @@ StyledRect {
         onClicked: {
             if (active) {
                 reselected();
-                let p = parent;
-                while (p) {
-                    if (p.requestClose) {
-                        p.requestClose();
-                        break;
-                    }
-                    p = p.parent;
-                }
             } else {
                 const wId = Kwin.workspaces[root.ws - 1]?.id || root.ws.toString();
                 Kwin.switchToWorkspace(wId, root.screenName);
@@ -322,6 +314,7 @@ StyledRect {
 
                 DragHandler {
                     id: dragHandler
+                    enabled: false
 
                     onActiveChanged: {
                         if (active) {
@@ -356,17 +349,11 @@ StyledRect {
                         if (root.active) {
                             if (modelData.address) {
                                 Kwin.focusWindow(modelData.address);
-                                
-                                let p = parent;
-                                while (p) {
-                                    if (p.requestClose) {
-                                        p.requestClose();
-                                        break;
-                                    }
-                                    p = p.parent;
-                                }
                             }
+                            root.reselected();
                         } else {
+                            const wId = Kwin.workspaces[root.ws - 1]?.id || root.ws.toString();
+                            Kwin.switchToWorkspace(wId, root.screenName);
                             root.selected();
                         }
                     }

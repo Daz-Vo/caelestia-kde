@@ -28,6 +28,7 @@ https://github.com/user-attachments/assets/38b24e7f-fdd9-43db-872b-8c0ac23a44fd
 3. **Vị trí thông báo chuẩn:** Vị trí mặc định được đặt tại góc trên bên phải (`top-right`) tối ưu hiển thị.
 4. **Bộ công cụ khôi phục tùy biến:** Đi kèm lệnh độc quyền `caelestia-apply-customizations` giúp khôi phục toàn bộ tinh chỉnh ngay lập tức sau mỗi lần cập nhật upstream.
 5. **Tối ưu chuyển cửa sổ (Alt + Tab):** Phân tách rõ ràng phím tắt, `Alt + Tab` chuyển nhanh giữa các cửa sổ gọn gàng không bị bung choáng hết màn hình lớn, trong khi `Meta + Tab` (hoặc `Super + Tab`) mở giao diện Tổng quan (Overview) toàn màn hình khi cần quản lý đa không gian làm việc.
+6. **Trải nghiệm Overview mượt mà:** Khóa thao tác kéo thả (drag) gây giật lag/nhận diện nhầm trên thumbnail màn hình nhỏ; chuyển không gian làm việc ngay lập tức chỉ với 1 click mà không thoát Overview, và bấm vào chính không gian làm việc hiện tại để đóng Overview.
 
 ---
 
@@ -61,8 +62,9 @@ caelestia-apply-customizations
 > **Lệnh trên sẽ tự động:**
 > 1. Vá lại logic gắn liền khối thông báo cho `Panels.qml`.
 > 2. Kích hoạt lại bộ lọc chặn popup NumLock/OSD khi khởi động trong `Kwin.qml` và `Wrapper.qml`.
-> 3. Kiểm tra lại cấu hình phím tắt và vị trí thông báo trong `shell.json`.
-> 4. Khởi động lại Caelestia Shell để áp dụng ngay lập tức mà không cần đăng xuất.
+> 3. Cập nhật logic Workspace / Overview: tắt kéo thả app ở màn hình nhỏ, 1 click chuyển workspace không đóng Overview, bấm workspace hiện tại để đóng.
+> 4. Kiểm tra lại cấu hình phím tắt và vị trí thông báo trong `shell.json`.
+> 5. Khởi động lại Caelestia Shell để áp dụng ngay lập tức mà không cần đăng xuất.
 
 ---
 

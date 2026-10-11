@@ -145,4 +145,82 @@ if os.path.exists(keybinds_path):
     else:
         print("[✓] keybinds.json đã có overview = Meta+Tab")
 
+# 6. modules/overview/components/workspaces/Workspace.qml: Tối ưu phản hồi click, chuyển workspace không thoát, click workspace hiện tại để thoát
+ws_target1 = """    DragHandler {
+        id: workspaceDragHandler
+
+        target: null"""
+ws_repl1 = """    DragHandler {
+        id: workspaceDragHandler
+        enabled: false
+        target: null"""
+patch_file("modules/overview/components/workspaces/Workspace.qml", ws_target1, ws_repl1, "Workspace.qml: workspaceDragHandler dragThreshold")
+
+ws_target2 = """                DragHandler {
+                    id: dragHandler
+
+                    onActiveChanged: {"""
+ws_repl2 = """                DragHandler {
+                    id: dragHandler
+                    enabled: false
+
+                    onActiveChanged: {"""
+patch_file("modules/overview/components/workspaces/Workspace.qml", ws_target2, ws_repl2, "Workspace.qml: window dragHandler dragThreshold")
+
+ws_click_target = """        onClicked: {
+            if (active) {
+                reselected();
+                let p = parent;
+                while (p) {
+                    if (p.requestClose) {
+                        p.requestClose();
+                        break;
+                    }
+                    p = p.parent;
+                }
+            } else {
+                const wId = Kwin.workspaces[root.ws - 1]?.id || root.ws.toString();
+                Kwin.switchToWorkspace(wId, root.screenName);
+                selected();
+            }
+        }"""
+ws_click_repl = """        onClicked: {
+            if (active) {
+                reselected();
+            } else {
+                const wId = Kwin.workspaces[root.ws - 1]?.id || root.ws.toString();
+                Kwin.switchToWorkspace(wId, root.screenName);
+                selected();
+            }
+        }"""
+patch_file("modules/overview/components/workspaces/Workspace.qml", ws_click_target, ws_click_repl, "Workspace.qml: click workspace hiện tại để thoát, workspace khác để chuyển")
+
+ws_win_target = """                        if (root.active) {
+                            if (modelData.address) {
+                                Kwin.focusWindow(modelData.address);
+                                
+                                let p = parent;
+                                while (p) {
+                                    if (p.requestClose) {
+                                        p.requestClose();
+                                        break;
+                                    }
+                                    p = p.parent;
+                                }
+                            }
+                        } else {
+                            root.selected();
+                        }"""
+ws_win_repl = """                        if (root.active) {
+                            if (modelData.address) {
+                                Kwin.focusWindow(modelData.address);
+                            }
+                            root.reselected();
+                        } else {
+                            const wId = Kwin.workspaces[root.ws - 1]?.id || root.ws.toString();
+                            Kwin.switchToWorkspace(wId, root.screenName);
+                            root.selected();
+                        }"""
+patch_file("modules/overview/components/workspaces/Workspace.qml", ws_win_target, ws_win_repl, "Workspace.qml: click icon cửa sổ để chuyển / focus và thoát")
+
 print("=== Hoàn tất áp dụng tùy chỉnh ===")
