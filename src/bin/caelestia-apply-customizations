@@ -263,4 +263,95 @@ grid_repl2 = """        for (let i = 0; i < Kwin.workspaces.length; ++i) {
         }"""
 patch_file("modules/overview/WindowGrid.qml", grid_target2, grid_repl2, "WindowGrid.qml: tránh kích hoạt nhầm switchTimer trong syncPage")
 
+# 8. modules/overview/WindowGrid.qml: Nút mũi tên 2 bên màn hình chuyển workspace xoay vòng tròn
+grid_cycle_func_target = """    function activateSelected(): void {"""
+grid_cycle_func_repl = """    function cycleWorkspace(backwards: bool): void {
+        const total = listView.count;
+        if (total <= 1) return;
+        let nextIndex;
+        if (backwards) {
+            nextIndex = listView.currentIndex <= 0 ? total - 1 : listView.currentIndex - 1;
+        } else {
+            nextIndex = listView.currentIndex >= total - 1 ? 0 : listView.currentIndex + 1;
+        }
+        root.ignoreNextSwitch = false;
+        listView.currentIndex = nextIndex;
+        if (Kwin.workspaces && nextIndex < Kwin.workspaces.length) {
+            const targetId = Kwin.workspaces[nextIndex].id || Kwin.workspaces[nextIndex].index;
+            Kwin.switchToWorkspace(targetId, root.screen.name);
+        }
+    }
+    function activateSelected(): void {"""
+patch_file("modules/overview/WindowGrid.qml", grid_cycle_func_target, grid_cycle_func_repl, "WindowGrid.qml: hàm cycleWorkspace xoay vòng")
+
+grid_chev_target = """        visible: listView.currentIndex > 0
+
+        HoverHandler { id: hoverPrev }
+        StateLayer {
+            anchors.fill: parent
+            radius: parent.radius
+            onClicked: listView.currentIndex -= 1
+        }
+        MaterialIcon {
+            id: prevIcon
+
+            anchors.centerIn: parent
+            text: "chevron_left"
+            color: Colours.palette.m3onSurface
+            fontStyle.pointSize: Tokens.font.body.large.pointSize
+        }
+    }
+    StyledRect {
+        anchors.right: parent.right
+        anchors.verticalCenter: parent.verticalCenter
+        anchors.rightMargin: Tokens.padding.large
+        implicitWidth: nextIcon.implicitWidth + Tokens.padding.large * 2
+        implicitHeight: nextIcon.implicitHeight + Tokens.padding.large * 2
+        radius: height / 2
+        color: Colours.tPalette.m3surfaceContainerHigh
+        opacity: hoverNext.hovered ? 1 : 0.6
+        visible: listView.currentIndex < listView.count - 1
+
+        HoverHandler { id: hoverNext }
+        StateLayer {
+            anchors.fill: parent
+            radius: parent.radius
+            onClicked: listView.currentIndex += 1
+        }"""
+grid_chev_repl = """        visible: listView.count > 1
+
+        HoverHandler { id: hoverPrev }
+        StateLayer {
+            anchors.fill: parent
+            radius: parent.radius
+            onClicked: root.cycleWorkspace(true)
+        }
+        MaterialIcon {
+            id: prevIcon
+
+            anchors.centerIn: parent
+            text: "chevron_left"
+            color: Colours.palette.m3onSurface
+            fontStyle.pointSize: Tokens.font.body.large.pointSize
+        }
+    }
+    StyledRect {
+        anchors.right: parent.right
+        anchors.verticalCenter: parent.verticalCenter
+        anchors.rightMargin: Tokens.padding.large
+        implicitWidth: nextIcon.implicitWidth + Tokens.padding.large * 2
+        implicitHeight: nextIcon.implicitHeight + Tokens.padding.large * 2
+        radius: height / 2
+        color: Colours.tPalette.m3surfaceContainerHigh
+        opacity: hoverNext.hovered ? 1 : 0.6
+        visible: listView.count > 1
+
+        HoverHandler { id: hoverNext }
+        StateLayer {
+            anchors.fill: parent
+            radius: parent.radius
+            onClicked: root.cycleWorkspace(false)
+        }"""
+patch_file("modules/overview/WindowGrid.qml", grid_chev_target, grid_chev_repl, "WindowGrid.qml: nút mũi tên 2 bên xoay vòng workspace")
+
 print("=== Hoàn tất áp dụng tùy chỉnh ===")

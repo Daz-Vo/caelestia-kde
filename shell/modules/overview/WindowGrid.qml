@@ -83,6 +83,22 @@ Item {
         else
             root.selectedIndex = root.selectedIndex >= n - 1 ? 0 : root.selectedIndex + 1;
     }
+    function cycleWorkspace(backwards: bool): void {
+        const total = listView.count;
+        if (total <= 1) return;
+        let nextIndex;
+        if (backwards) {
+            nextIndex = listView.currentIndex <= 0 ? total - 1 : listView.currentIndex - 1;
+        } else {
+            nextIndex = listView.currentIndex >= total - 1 ? 0 : listView.currentIndex + 1;
+        }
+        root.ignoreNextSwitch = false;
+        listView.currentIndex = nextIndex;
+        if (Kwin.workspaces && nextIndex < Kwin.workspaces.length) {
+            const targetId = Kwin.workspaces[nextIndex].id || Kwin.workspaces[nextIndex].index;
+            Kwin.switchToWorkspace(targetId, root.screen.name);
+        }
+    }
     function activateSelected(): void {
         const wins = root.currentWindows;
         if (root.selectedIndex < 0 || root.selectedIndex >= wins.length)
@@ -789,13 +805,13 @@ Item {
         radius: height / 2
         color: Colours.tPalette.m3surfaceContainerHigh
         opacity: hoverPrev.hovered ? 1 : 0.6
-        visible: listView.currentIndex > 0
+        visible: listView.count > 1
 
         HoverHandler { id: hoverPrev }
         StateLayer {
             anchors.fill: parent
             radius: parent.radius
-            onClicked: listView.currentIndex -= 1
+            onClicked: root.cycleWorkspace(true)
         }
         MaterialIcon {
             id: prevIcon
@@ -815,13 +831,13 @@ Item {
         radius: height / 2
         color: Colours.tPalette.m3surfaceContainerHigh
         opacity: hoverNext.hovered ? 1 : 0.6
-        visible: listView.currentIndex < listView.count - 1
+        visible: listView.count > 1
 
         HoverHandler { id: hoverNext }
         StateLayer {
             anchors.fill: parent
             radius: parent.radius
-            onClicked: listView.currentIndex += 1
+            onClicked: root.cycleWorkspace(false)
         }
         MaterialIcon {
             id: nextIcon
