@@ -223,4 +223,44 @@ ws_win_repl = """                        if (root.active) {
                         }"""
 patch_file("modules/overview/components/workspaces/Workspace.qml", ws_win_target, ws_win_repl, "Workspace.qml: click icon cửa sổ để chuyển / focus và thoát")
 
+# 7. modules/overview/WindowGrid.qml: Chuyển workspace ngay lập tức khi click WorkspaceIndicator
+grid_target1 = """            onWorkspaceSelected: index => {
+                root.ignoreNextSwitch = false;
+                listView.currentIndex = index;
+            }"""
+grid_repl1 = """            onWorkspaceSelected: index => {
+                root.ignoreNextSwitch = false;
+                listView.currentIndex = index;
+                if (Kwin.workspaces && index < Kwin.workspaces.length) {
+                    const targetId = Kwin.workspaces[index].id || Kwin.workspaces[index].index;
+                    Kwin.switchToWorkspace(targetId, root.screen.name);
+                }
+            }"""
+patch_file("modules/overview/WindowGrid.qml", grid_target1, grid_repl1, "WindowGrid.qml: chuyển workspace tức thì khi chọn từ indicator")
+
+grid_target2 = """        for (let i = 0; i < Kwin.workspaces.length; ++i) {
+            const wId = Kwin.workspaces[i].index;
+            if (wId === activeWsId) {
+                if (listView.currentIndex !== i) {
+                    listView.currentIndex = i;
+                    if (!root._initialized) listView.positionViewAtIndex(i, ListView.SnapPosition);
+                }
+                break;
+            }
+        }
+        root.ignoreNextSwitch = false;"""
+grid_repl2 = """        for (let i = 0; i < Kwin.workspaces.length; ++i) {
+            const wId = Kwin.workspaces[i].index;
+            if (wId === activeWsId) {
+                if (listView.currentIndex !== i) {
+                    root.ignoreNextSwitch = true;
+                    listView.currentIndex = i;
+                    if (!root._initialized) listView.positionViewAtIndex(i, ListView.SnapPosition);
+                    root.ignoreNextSwitch = false;
+                }
+                break;
+            }
+        }"""
+patch_file("modules/overview/WindowGrid.qml", grid_target2, grid_repl2, "WindowGrid.qml: tránh kích hoạt nhầm switchTimer trong syncPage")
+
 print("=== Hoàn tất áp dụng tùy chỉnh ===")

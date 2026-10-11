@@ -101,13 +101,14 @@ Item {
             const wId = Kwin.workspaces[i].index;
             if (wId === activeWsId) {
                 if (listView.currentIndex !== i) {
+                    root.ignoreNextSwitch = true;
                     listView.currentIndex = i;
                     if (!root._initialized) listView.positionViewAtIndex(i, ListView.SnapPosition);
+                    root.ignoreNextSwitch = false;
                 }
                 break;
             }
         }
-        root.ignoreNextSwitch = false;
         ignoreTimer.stop();
         root._initialized = true;
     }
@@ -690,6 +691,10 @@ Item {
             onWorkspaceSelected: index => {
                 root.ignoreNextSwitch = false;
                 listView.currentIndex = index;
+                if (Kwin.workspaces && index < Kwin.workspaces.length) {
+                    const targetId = Kwin.workspaces[index].id || Kwin.workspaces[index].index;
+                    Kwin.switchToWorkspace(targetId, root.screen.name);
+                }
             }
             onWorkspaceReselected: root.requestClose()
             onCreateWorkspaceRequest: {
