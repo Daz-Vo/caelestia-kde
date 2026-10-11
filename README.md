@@ -2,7 +2,7 @@
 
 <img src="assets/logo.svg" width="64" alt="Caelestia logo" />
 
-# caelestia-kde
+# Caelestia KDE (Bản Tùy Biến Của Daz_Vo)
 
 [![Arch Linux](https://img.shields.io/badge/Arch_Linux-1793d1?logo=arch-linux&logoColor=white&style=for-the-badge&labelColor=101418)](https://archlinux.org)
 [![Fedora](https://img.shields.io/badge/Fedora-51A2DA?logo=fedora&logoColor=white&style=for-the-badge&labelColor=101418)](https://fedoraproject.org)
@@ -12,120 +12,138 @@
 
 </div>
 
-<!-- markdownlint-disable-next-line MD034 -- a bare URL is what GitHub turns into an inline video player -->
+<!-- markdownlint-disable-next-line MD034 -->
 https://github.com/user-attachments/assets/38b24e7f-fdd9-43db-872b-8c0ac23a44fd
 
 > [!NOTE]
-> This repo is the KDE Plasma port of [`caelestia-dots/shell`](https://github.com/caelestia-dots/shell).
-> Upstream runs on Hyprland; the port runs the same shell on KWin and Plasma. For the original
-> Hyprland dotfiles, see [`caelestia-dots/caelestia`](https://github.com/caelestia-dots/caelestia).
+> Đây là bản fork tùy biến của [`ladybug-me/caelestia-kde`](https://github.com/ladybug-me/caelestia-kde) (bản chuyển giao diện của [`caelestia-dots/shell`](https://github.com/caelestia-dots/shell) sang KDE Plasma 6 Wayland).
+> Bản fork này đã được tinh chỉnh và bổ sung các tính năng nâng cao về trải nghiệm thông báo, chặn popup rác lúc khởi động cùng bộ công cụ giữ nguyên tùy biến sau mỗi lần cập nhật.
 
-## Installation
+---
 
-**Requirements:** Arch-based, Fedora, or Debian/Ubuntu - KDE Plasma 6 on Wayland, Qt 6.9+
+## ✨ Điểm Mới & Tinh Chỉnh Trong Bản Này
+
+1. **Thông báo dính liền khối:** Khi mở ngăn tiện ích phía trên (Utilities drawer), thông báo được đẩy xuống và gắn liền khối thành một thể thống nhất, không còn khoảng hở rời rạc hay bị che khuất.
+2. **Khởi động êm ái (Startup Mute Guard):** Chặn hoàn toàn các thông báo Num Lock / Caps Lock và thanh OSD (Âm lượng / Độ sáng) nhảy lên màn hình trong 1.5 giây đầu khi vừa nạp giao diện.
+3. **Vị trí thông báo chuẩn:** Vị trí mặc định được đặt tại góc trên bên phải (`top-right`) tối ưu hiển thị.
+4. **Bộ công cụ khôi phục tùy biến:** Đi kèm lệnh độc quyền `caelestia-apply-customizations` giúp khôi phục toàn bộ tinh chỉnh ngay lập tức sau mỗi lần cập nhật upstream.
+
+---
+
+## Cài Đặt (Installation)
+
+**Yêu cầu hệ thống:** Arch-based, Fedora, hoặc Debian/Ubuntu chạy **KDE Plasma 6 trên Wayland**, Qt 6.9+.
+
+Chạy các lệnh sau trong terminal:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/ladybug-me/caelestia-kde/main/install.sh | sh
+git clone --recurse-submodules https://github.com/Daz-Vo/caelestia-kde.git
+cd caelestia-kde
+./caelestia-install
 ```
 
-### Updating
+---
 
-- **Installer TUI:** run the installer and choose *Update*
-- **GUI:** Nexus -> Updates -> select branch -> Install Updates
-- **CLI:** `bash update.sh` and choose `main` (stable) or `dev` (bleeding edge)
+## Cập Nhật & Khôi Phục Tùy Chỉnh (Updating)
 
-Shell settings are preserved across updates.
+Khi Caelestia có bản cập nhật mới, bạn có thể cập nhật thông qua:
+* **Giao diện Nexus:** `Nexus -> Updates -> Install Updates`
+* **Lệnh terminal:** `caelestia update`
 
-### Uninstalling
+### ⚠️ Khôi phục các thiết lập tùy biến sau khi cập nhật:
+Sau khi cập nhật xong, các file giao diện gốc có thể bị ghi đè. Bạn chỉ cần mở terminal và chạy một lệnh duy nhất:
 
-Choose *Uninstall* from the installer TUI, or run:
+```bash
+caelestia-apply-customizations
+```
+
+> **Lệnh trên sẽ tự động:**
+> 1. Vá lại logic gắn liền khối thông báo cho `Panels.qml`.
+> 2. Kích hoạt lại bộ lọc chặn popup NumLock/OSD khi khởi động trong `Kwin.qml` và `Wrapper.qml`.
+> 3. Kiểm tra lại cấu hình phím tắt và vị trí thông báo trong `shell.json`.
+> 4. Khởi động lại Caelestia Shell để áp dụng ngay lập tức mà không cần đăng xuất.
+
+---
+
+## Gỡ Cài Đặt (Uninstalling)
+
+Chạy trình cài đặt và chọn *Uninstall*, hoặc gõ lệnh:
 
 ```bash
 bash ./uninstall.sh
 ```
 
-## Keybinds
+---
 
-| Shortcut | Action |
+## Phím Tắt Mặc Định (Keybinds)
+
+| Phím tắt | Thao tác |
 | --- | --- |
-| `Super` | App launcher |
-| `Super + /` | Keybind cheatsheet |
-| `Super + Enter` | Terminal |
-| `Super + Tab` | Overview |
-| `Super + 1-5` | Switch workspace |
-| `Super + B` | Notification sidebar |
-| `Super + V` | Clipboard history |
-| `Super + Shift + S` | Screenshot |
-| `Super + Shift + A` | Google Lens |
-| `Super + Shift + D` | Text recognition |
-| `Super + Ctrl + S` | Screen recorder |
-| `Super + Shift + C` | Color picker |
-| `Super + Shift + V` | Emoji selector |
+| `Super` | Mở App Launcher |
+| `Super + /` | Bảng tra cứu phím tắt |
+| `Super + Enter` | Mở Terminal |
+| `Super + Tab` | Tổng quan cửa sổ (Overview) |
+| `Super + 1-5` | Chuyển Không gian làm việc (Workspace) |
+| `Super + B` | Bảng thông báo (Sidebar) |
+| `Super + V` | Lịch sử Clipboard |
+| `Super + Shift + S` | Chụp ảnh màn hình |
+| `Super + Shift + A` | Tìm kiếm ảnh với Google Lens |
+| `Super + Shift + D` | Nhận diện chữ trong ảnh (OCR) |
+| `Super + Ctrl + S` | Quay video màn hình |
+| `Super + Shift + C` | Lấy mã màu màn hình (Color Picker) |
+| `Super + Shift + V` | Bảng chọn Emoji |
 
-## Configuring
+---
 
-Open Nexus (`Super`, then `>Settings`).
+## Cấu Hình Hệ Thống
 
-- Appearance: wallpaper, colors, fonts, and the wallpaper slideshow
-- Panels: every bar element, dashboard, launcher, sidebar and overview
-- Desktop: window rules, the context menu, Krohnkite
-- Shortcuts: rebind any built-in shortcut, or add a command shortcut
-- Plugins: browse the store, or install a plugin you built yourself
+Mở **Nexus** (Nhấn `Super`, sau đó gõ `>Settings`):
 
-Set the wallpaper from Appearance. The stock KDE wallpaper manager does not drive
-the color scheme, so using it leaves the shell on stale colors.
+- **Appearance:** Hình nền, màu sắc, phông chữ và slideshow đổi hình nền.
+- **Panels:** Tùy biến thanh dock, dashboard, launcher, sidebar và overview.
+- **Desktop:** Window rules, menu chuột phải, Krohnkite tiling.
+- **Shortcuts:** Đổi phím tắt có sẵn hoặc thêm phím tắt cho lệnh riêng.
+- **Plugins:** Cài đặt tiện ích mở rộng.
 
-Settings are written to `~/.config/caelestia/shell.json`.
+File cấu hình được lưu tại: `~/.config/caelestia/shell.json`.
 
-## Troubleshooting
+---
 
-| Problem | Fix |
+## Xử Lý Sự Cố (Troubleshooting)
+
+| Vấn đề | Cách khắc phục |
 | --- | --- |
-| Widgets not appearing | Log out and back in, or run `caelestia shell -d` |
-| Colors not applying | Run `caelestia scheme set -n dynamic`, or `caelestia wallpaper -f <image>`. See [TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md#34-colors-not-applying) |
-| Install failed mid-way | Re-run `bash ./scripts/setup.sh` |
-| Full reset needed | See [TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) |
+| Widget không hiển thị | Đăng xuất rồi đăng nhập lại, hoặc chạy: `caelestia shell -d` |
+| Màu sắc không đồng bộ | Chạy `caelestia scheme set -n dynamic`, hoặc `caelestia wallpaper -f <đường_dẫn_ảnh>` |
+| Cài đặt bị gián đoạn giữa chừng | Chạy lại: `bash ./scripts/setup.sh` |
+| Mất tùy biến sau khi update | Chạy lại: `caelestia-apply-customizations` |
 
-For detailed logs, enable Debug Mode in Nexus -> About -> Advanced, then run
-`caelestia shell -l`. Bug reports and questions go to
-[GitHub Issues](https://github.com/ladybug-me/caelestia-kde/issues).
-
-## Repository layout
-
-```
-installer/     TUI installer and the per-distro package lists
-  tui/         C++ TUI source and its CMakeLists
-  data/        menu.json, theme.json, tui.version
-  distro/      per-distro package installation (arch, debian, fedora)
-scripts/       install/update pipeline: the numbered steps and their shared lib/
-src/           files copied onto the system, plus the vendored submodules
-shell/         the QML shell and its C++ QML plugin
-docs/          guides, plus design notes under docs/architecture/
-tests/         bash tests for the step-script helpers
-tools/         repo maintenance scripts, never shipped
-assets/        the logo and screenshots used by the docs
-.github/       workflows, issue and PR templates, CI checks
+Để xem log chi tiết, bật *Debug Mode* trong `Nexus -> About -> Advanced`, sau đó chạy:
+```bash
+caelestia shell -l
 ```
 
-<a href="https://www.star-history.com/?repos=ladybug-me%2Fcaelestia-kde&type=date&legend=top-left">
- <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=ladybug-me/caelestia-kde&type=date&theme=dark&legend=top-left&sealed_token=NFI4jXcoZAI26MlGX2jEasHMRd1PIS09clm_CVDS7SFGajH3wiHlN72P8WzuOQT2k2F71ZOCGl_xoy8eVpWlWtA0ACY3koK0NIS1-vLecN0vbvYgrZDN9kp8sQn7NT2xPNeilgrmzYWTzgdQYgskaDMGophAKmy6r6LUfQj8iFjy-Gunuqnte3EY14fX" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=ladybug-me/caelestia-kde&type=date&legend=top-left&sealed_token=NFI4jXcoZAI26MlGX2jEasHMRd1PIS09clm_CVDS7SFGajH3wiHlN72P8WzuOQT2k2F71ZOCGl_xoy8eVpWlWtA0ACY3koK0NIS1-vLecN0vbvYgrZDN9kp8sQn7NT2xPNeilgrmzYWTzgdQYgskaDMGophAKmy6r6LUfQj8iFjy-Gunuqnte3EY14fX" />
-   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=ladybug-me/caelestia-kde&type=date&legend=top-left&sealed_token=NFI4jXcoZAI26MlGX2jEasHMRd1PIS09clm_CVDS7SFGajH3wiHlN72P8WzuOQT2k2F71ZOCGl_xoy8eVpWlWtA0ACY3koK0NIS1-vLecN0vbvYgrZDN9kp8sQn7NT2xPNeilgrmzYWTzgdQYgskaDMGophAKmy6r6LUfQj8iFjy-Gunuqnte3EY14fX" />
- </picture>
-</a>
+---
 
-## Credits
+## Cấu Trúc Thư Mục (Repository Layout)
 
-- [caelestia-dots/shell](https://github.com/caelestia-dots/shell) and the [Caelestia dotfiles](https://github.com/caelestia-dots/caelestia) by [@soramanew](https://github.com/soramanew) - the design language, shell and dotfiles this port is built on
-- [ladybug-me](https://github.com/ladybug-me) - KDE port lead
-- [0xSolanaceae](https://github.com/0xSolanaceae) - Head maintainer
-- [Bali10050](https://github.com/Bali10050/Darkly) - Darkly Qt
-- [wrymt](https://github.com/wrymt/darkly-gtk) - Darkly GTK
-- [Haidir](https://bitbucket.org/dirn-typo/yet-another-monochrome-icon-set) - icon set
-- [dim-ghub](https://github.com/dim-ghub/caelestia-shell) - v2.0.0 features
-- [dharmx](https://github.com/dharmx/walls) - default wallpapers
-  
-## License
+```
+installer/     Trình cài đặt TUI và danh sách gói theo từng bản phân phối Linux
+scripts/       Quy trình cài đặt / cập nhật hệ thống
+src/           Các tệp cài vào hệ thống (scripts, bin wrappers, submodules)
+shell/         Mã nguồn giao diện Caelestia QML và plugin C++
+docs/          Tài liệu hướng dẫn & kiến trúc thiết kế
+assets/        Logo, ảnh chụp màn hình và video minh họa
+```
 
-GPL-3.0-or-later - see [LICENSE](LICENSE).
+---
+
+## Đóng Góp & Lời Cảm Ơn (Credits)
+
+- [caelestia-dots/shell](https://github.com/caelestia-dots/shell) & [caelestia dotfiles](https://github.com/caelestia-dots/caelestia) bởi [@soramanew](https://github.com/soramanew)
+- [ladybug-me/caelestia-kde](https://github.com/ladybug-me/caelestia-kde) - Dự án gốc port sang KDE Plasma
+- [Daz_Vo](https://github.com/Daz-Vo) - Tinh chỉnh trải nghiệm thông báo, bộ đệm khởi động và công cụ khôi phục tùy biến
+
+## Giấy Phép (License)
+
+GPL-3.0-or-later - Xem chi tiết tại [LICENSE](LICENSE).
