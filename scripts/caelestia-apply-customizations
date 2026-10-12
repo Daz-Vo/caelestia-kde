@@ -157,7 +157,7 @@ kglobal_path = os.path.expanduser("~/.config/kglobalshortcutsrc")
 if os.path.exists(kglobal_path):
     try:
         subprocess.run(["kwriteconfig6", "--file", kglobal_path, "--group", "caelestia-shell", "--key", "caelestia-shortcut-session", "Meta+Del,none,Toggle session menu"], check=False)
-        subprocess.run(["gdbus", "call", "--session", "--dest", "org.kde.kglobalaccel", "--object-path", "/kglobalaccel", "--method", "org.kde.KGlobalAccel.setShortcutKeys", "['caelestia-shell', 'caelestia-shortcut-session', '', '']", "[([134217736, 0, 0, 0],)]", "4"], check=False, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        subprocess.run(["gdbus", "call", "--session", "--dest", "org.kde.kglobalaccel", "--object-path", "/kglobalaccel", "--method", "org.kde.KGlobalAccel.setShortcutKeys", "['caelestia-shell', 'caelestia-shortcut-session', '', '']", "[([285212679, 0, 0, 0],)]", "4"], check=False, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         print("[✓] Đã kích hoạt phím tắt Super + Delete cho Menu Nguồn trong hệ thống KDE")
     except Exception as e:
         print(f"[!] Không thể cập nhật kglobalshortcutsrc: {e}")
