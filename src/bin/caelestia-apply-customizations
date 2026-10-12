@@ -223,8 +223,9 @@ grid_target2 = """        for (let i = 0; i < Kwin.workspaces.length; ++i) {
             if (wId === activeWsId) {
                 if (listView.currentIndex !== i) {
                     listView.currentIndex = i;
-                    if (!root._initialized) listView.positionViewAtIndex(i, ListView.SnapPosition);
                 }
+                if (!root._initialized || root.opacity <= 0.01)
+                    listView.positionViewAtIndex(i, ListView.SnapPosition);
                 break;
             }
         }
@@ -235,9 +236,10 @@ grid_repl2 = """        for (let i = 0; i < Kwin.workspaces.length; ++i) {
                 if (listView.currentIndex !== i) {
                     root.ignoreNextSwitch = true;
                     listView.currentIndex = i;
-                    if (!root._initialized) listView.positionViewAtIndex(i, ListView.SnapPosition);
                     root.ignoreNextSwitch = false;
                 }
+                if (!root._initialized || root.opacity <= 0.01)
+                    listView.positionViewAtIndex(i, ListView.SnapPosition);
                 break;
             }
         }"""
@@ -333,5 +335,42 @@ grid_chev_repl = """        visible: listView.count > 1
             onClicked: root.cycleWorkspace(false)
         }"""
 patch_file("modules/overview/WindowGrid.qml", grid_chev_target, grid_chev_repl, "WindowGrid.qml: nút mũi tên 2 bên xoay vòng workspace")
+
+# 9. Khôi phục cấu hình Terminal ban đầu (Fish, Starship, Fastfetch) nếu có bản lưu
+import shutil
+
+backup_base = os.path.expanduser("~/caelestia-kde/backups/20261010_211728/.config")
+user_custom_dir = os.path.expanduser("~/.config/caelestia-custom/terminal")
+
+# Nếu chưa lưu bản custom vào thư mục an toàn ~/.config/caelestia-custom/terminal thì khởi tạo từ backup
+if not os.path.exists(user_custom_dir):
+    os.makedirs(user_custom_dir, exist_ok=True)
+    if os.path.exists(backup_base):
+        for item in ["fish", "fastfetch", "starship.toml"]:
+            src = os.path.join(backup_base, item)
+            dst = os.path.join(user_custom_dir, item)
+            if os.path.isdir(src):
+                shutil.copytree(src, dst, dirs_exist_ok=True)
+            elif os.path.isfile(src):
+                shutil.copy2(src, dst)
+        print("[✓] Đã khởi tạo bản lưu cấu hình Terminal riêng tại ~/.config/caelestia-custom/terminal")
+
+# Khôi phục từ ~/.config/caelestia-custom/terminal vào ~/.config
+if os.path.exists(user_custom_dir):
+    # Fish
+    custom_fish = os.path.join(user_custom_dir, "fish")
+    if os.path.exists(custom_fish):
+        shutil.copytree(custom_fish, os.path.expanduser("~/.config/fish"), dirs_exist_ok=True)
+        print("[✓] Đã khôi phục cấu hình Fish riêng của bạn")
+    # Fastfetch
+    custom_fastfetch = os.path.join(user_custom_dir, "fastfetch")
+    if os.path.exists(custom_fastfetch):
+        shutil.copytree(custom_fastfetch, os.path.expanduser("~/.config/fastfetch"), dirs_exist_ok=True)
+        print("[✓] Đã khôi phục cấu hình Fastfetch riêng của bạn")
+    # Starship
+    custom_starship = os.path.join(user_custom_dir, "starship.toml")
+    if os.path.exists(custom_starship):
+        shutil.copy2(custom_starship, os.path.expanduser("~/.config/starship.toml"))
+        print("[✓] Đã khôi phục cấu hình Starship riêng của bạn")
 
 print("=== Hoàn tất áp dụng tùy chỉnh ===")
