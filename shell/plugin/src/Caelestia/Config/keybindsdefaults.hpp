@@ -14,7 +14,7 @@ inline QJsonObject defaultKeybinds() {
         { QStringLiteral("ocr"), QStringLiteral("Meta+Shift+D") },
         { QStringLiteral("screenRecording"), QStringLiteral("Meta+Ctrl+S") },
         { QStringLiteral("lock"), QStringLiteral("Meta+L") },
-        { QStringLiteral("session"), QStringLiteral("Ctrl+Alt+Delete") },
+        { QStringLiteral("session"), QStringLiteral("Meta+Delete") },
         { QStringLiteral("launcher"), QStringLiteral("Meta+Space; Meta") },
         { QStringLiteral("launcherInterrupt"), QStringLiteral("") },
         { QStringLiteral("sidebar"), QStringLiteral("Meta+B") }, { QStringLiteral("aiAssistant"), QStringLiteral("") },
