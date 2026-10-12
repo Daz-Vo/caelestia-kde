@@ -361,7 +361,11 @@ if os.path.exists(user_custom_dir):
     custom_fish = os.path.join(user_custom_dir, "fish")
     if os.path.exists(custom_fish):
         shutil.copytree(custom_fish, os.path.expanduser("~/.config/fish"), dirs_exist_ok=True)
-        print("[✓] Đã khôi phục cấu hình Fish riêng của bạn")
+        # Xóa triệt để file fish_greeting.fish (chữ nghệ thuật Caelestia và fastfetch tự bật lúc mở shell)
+        greeting_file = os.path.expanduser("~/.config/fish/functions/fish_greeting.fish")
+        if os.path.exists(greeting_file):
+            os.remove(greeting_file)
+        print("[✓] Đã khôi phục cấu hình Fish riêng của bạn (tắt logo & chữ Caelestia lúc mở shell)")
     # Fastfetch
     custom_fastfetch = os.path.join(user_custom_dir, "fastfetch")
     if os.path.exists(custom_fastfetch):
