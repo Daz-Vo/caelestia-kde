@@ -130,6 +130,22 @@ Popup {
                         keyStr = "Print"
                     } else if (event.key >= Qt.Key_F1 && event.key <= Qt.Key_F35) {
                         keyStr = "F" + (event.key - Qt.Key_F1 + 1)
+                    } else if (event.key === Qt.Key_Delete) {
+                        keyStr = "Delete"
+                    } else if (event.key === Qt.Key_Backspace) {
+                        keyStr = "Backspace"
+                    } else if (event.key === Qt.Key_Insert) {
+                        keyStr = "Insert"
+                    } else if (event.key === Qt.Key_Home) {
+                        keyStr = "Home"
+                    } else if (event.key === Qt.Key_End) {
+                        keyStr = "End"
+                    } else if (event.key === Qt.Key_PageUp) {
+                        keyStr = "PageUp"
+                    } else if (event.key === Qt.Key_PageDown) {
+                        keyStr = "PageDown"
+                    } else if (event.key === Qt.Key_Backtab) {
+                        keyStr = "Backtab"
                     } else {
                         // Fallback (e.g. F-keys)
                         // Note: QKeySequence string conversion isn't directly exposed to JS, 

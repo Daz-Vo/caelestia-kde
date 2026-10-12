@@ -162,6 +162,32 @@ if os.path.exists(kglobal_path):
     except Exception as e:
         print(f"[!] Không thể cập nhật kglobalshortcutsrc: {e}")
 
+# 5.1 modules/nexus/common/KeyCaptureDialog.qml: Sửa lỗi ghi nhận phím Delete và các phím đặc biệt (tránh ô vuông )
+capture_target = """                    } else if (event.key >= Qt.Key_F1 && event.key <= Qt.Key_F35) {
+                        keyStr = "F" + (event.key - Qt.Key_F1 + 1)
+                    } else {"""
+capture_repl = """                    } else if (event.key >= Qt.Key_F1 && event.key <= Qt.Key_F35) {
+                        keyStr = "F" + (event.key - Qt.Key_F1 + 1)
+                    } else if (event.key === Qt.Key_Delete) {
+                        keyStr = "Delete"
+                    } else if (event.key === Qt.Key_Backspace) {
+                        keyStr = "Backspace"
+                    } else if (event.key === Qt.Key_Insert) {
+                        keyStr = "Insert"
+                    } else if (event.key === Qt.Key_Home) {
+                        keyStr = "Home"
+                    } else if (event.key === Qt.Key_End) {
+                        keyStr = "End"
+                    } else if (event.key === Qt.Key_PageUp) {
+                        keyStr = "PageUp"
+                    } else if (event.key === Qt.Key_PageDown) {
+                        keyStr = "PageDown"
+                    } else if (event.key === Qt.Key_Backtab) {
+                        keyStr = "Backtab"
+                    } else {"""
+patch_file("modules/nexus/common/KeyCaptureDialog.qml", capture_target, capture_repl, "KeyCaptureDialog.qml: hỗ trợ phím Delete, Backspace và phím điều hướng")
+
+
 # 6. modules/overview/components/workspaces/Workspace.qml: Chuyển workspace không thoát, click workspace hiện tại để thoát
 
 ws_click_target = """        onClicked: {
