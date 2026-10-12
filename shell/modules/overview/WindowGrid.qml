@@ -657,20 +657,61 @@ Item {
                 }
             }
         }
-        MouseArea {
-            anchors.fill: parent
-            acceptedButtons: Qt.NoButton
-            onWheel: event => {
-                if (!Config.bar.scrollActions.workspaces) return;
+        property real accumulatedScrollDelta: 0
+        property bool scrollCooldown: false
 
-                if (event.angleDelta.y > 0 || event.angleDelta.x > 0) {
-                    if (listView.currentIndex > 0) {
-                        listView.currentIndex -= 1;
+        Timer {
+            id: scrollCooldownTimer
+
+            interval: 220
+            onTriggered: listView.scrollCooldown = false
+        }
+        Timer {
+            id: scrollResetTimer
+
+            interval: 350
+            onTriggered: {
+                listView.accumulatedScrollDelta = 0;
+                listView.scrollCooldown = false;
+            }
+        }
+        WheelHandler {
+            id: overviewWheelHandler
+
+            target: null
+            orientation: Qt.Horizontal | Qt.Vertical
+
+            onWheel: event => {
+                if (root.isDragging) return;
+
+                let dx = event.angleDelta.x !== 0 ? event.angleDelta.x : event.pixelDelta.x;
+                let dy = event.angleDelta.y !== 0 ? event.angleDelta.y : event.pixelDelta.y;
+
+                let delta = Math.abs(dx) >= Math.abs(dy) ? dx : dy;
+                if (delta === 0) return;
+
+                if (listView.scrollCooldown) {
+                    scrollResetTimer.restart();
+                    return;
+                }
+
+                if ((listView.accumulatedScrollDelta > 0 && delta < 0) || (listView.accumulatedScrollDelta < 0 && delta > 0)) {
+                    listView.accumulatedScrollDelta = 0;
+                }
+
+                listView.accumulatedScrollDelta += delta;
+                scrollResetTimer.restart();
+
+                const threshold = 100;
+                if (Math.abs(listView.accumulatedScrollDelta) >= threshold) {
+                    listView.scrollCooldown = true;
+                    scrollCooldownTimer.restart();
+                    if (listView.accumulatedScrollDelta > 0) {
+                        root.cycleWorkspace(true);
+                    } else {
+                        root.cycleWorkspace(false);
                     }
-                } else if (event.angleDelta.y < 0 || event.angleDelta.x < 0) {
-                    if (listView.currentIndex < listView.count - 1) {
-                        listView.currentIndex += 1;
-                    }
+                    listView.accumulatedScrollDelta = 0;
                 }
             }
         }
