@@ -94,7 +94,7 @@ static KrohnkiteSettings readSettings() {
     for (const auto& entry : allLayoutDefaults()) {
         const QString key = QString::fromLatin1(entry.key);
         const int order = group.readEntry(key, entry.defaultOrder);
-        settings.layoutOrders.insert(key, order >= 1 ? order : -1);
+        settings.layoutOrders.insert(key, order >= 1 ? order : 0);
     }
     return settings;
 }
@@ -115,7 +115,7 @@ void KrohnkiteConfig::setLayoutEnabled(const QString& key, bool enabled) {
         int removedOrder = orders[key];
         if (removedOrder < 1)
             return;
-        orders[key] = -1;
+        orders[key] = 0;
         for (auto it = orders.begin(); it != orders.end(); ++it) {
             if (it.value() > removedOrder) {
                 it.value() -= 1;
@@ -167,6 +167,15 @@ void KrohnkiteConfig::apply() {
     QDBusMessage msg = QDBusMessage::createMethodCall(QStringLiteral("org.kde.KWin"), QStringLiteral("/KWin"),
         QStringLiteral("org.kde.KWin"), QStringLiteral("reconfigure"));
     QDBusConnection::sessionBus().call(msg, QDBus::NoBlock);
+
+    QDBusMessage unloadMsg = QDBusMessage::createMethodCall(QStringLiteral("org.kde.KWin"), QStringLiteral("/Scripting"),
+        QStringLiteral("org.kde.kwin.Scripting"), QStringLiteral("unloadScript"));
+    unloadMsg << QStringLiteral("krohnkite");
+    QDBusConnection::sessionBus().call(unloadMsg, QDBus::Block);
+
+    QDBusMessage startMsg = QDBusMessage::createMethodCall(QStringLiteral("org.kde.KWin"), QStringLiteral("/Scripting"),
+        QStringLiteral("org.kde.kwin.Scripting"), QStringLiteral("start"));
+    QDBusConnection::sessionBus().call(startMsg, QDBus::NoBlock);
 }
 
 void KrohnkiteConfig::setScreenGapBetween(int gap) {

@@ -29,6 +29,11 @@ https://github.com/user-attachments/assets/38b24e7f-fdd9-43db-872b-8c0ac23a44fd
 4. **Bộ công cụ khôi phục tùy biến:** Đi kèm lệnh độc quyền `caelestia-apply-customizations` giúp khôi phục toàn bộ tinh chỉnh ngay lập tức sau mỗi lần cập nhật upstream.
 5. **Tối ưu chuyển cửa sổ (Alt + Tab):** Phân tách rõ ràng phím tắt, `Alt + Tab` chuyển nhanh giữa các cửa sổ gọn gàng không bị bung choáng hết màn hình lớn, trong khi `Meta + Tab` (hoặc `Super + Tab`) mở giao diện Tổng quan (Overview) toàn màn hình khi cần quản lý đa không gian làm việc.
 6. **Trải nghiệm Overview mượt mà:** Chuyển không gian làm việc ngay lập tức chỉ với 1 click mà không thoát Overview, và bấm vào chính không gian làm việc hiện tại để đóng Overview.
+7. **Xoay vòng Workspace hai chiều:** Giữ trọn tính năng xoay vòng (wrap-around) không gian làm việc khi bấm nút chuyển trang ở hai mép màn hình.
+8. **Kéo thả ứng dụng ở Thumbnail thu nhỏ:** Cho phép kéo thả trực tiếp cửa sổ/ứng dụng giữa các thumbnail màn hình nhỏ trong thanh chuyển đổi.
+9. **Vuốt 2 ngón tay chuyển Quick Toggles:** Hỗ trợ cử chỉ vuốt 2 ngón tay (Touchpad horizontal swipe) sang trái/phải để chuyển đổi qua lại giữa các trang Quick Toggles tiện lợi.
+10. **Bảo tồn cấu hình Shell / Terminal riêng:** Giữ nguyên cấu hình cá nhân (Fish shell, Starship prompt, Fastfetch...), không chạy đè logo Caelestia khi mở terminal (chỉ hiển thị logo khi chạy các ứng dụng như Dolphin hoặc khi gõ lệnh thủ công).
+11. **Sửa lỗi Tiling chia 4 ô bằng nhau (Quarter / Grid 2x2):** Khắc phục lỗi Krohnkite tự ý dồn cửa sổ về Master-Stack (1 ô lớn bên trái, 3 ô dồn bên phải); chuẩn hóa cơ chế tắt layout bằng giá trị `0` và tự động nạp lại script KWin ngay lập tức khi lưu cài đặt, kích hoạt sẵn chế độ chia 4 góc 2x2 bằng nhau.
 
 ---
 

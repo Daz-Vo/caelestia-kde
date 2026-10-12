@@ -72,11 +72,12 @@ kwriteconfig6 --file kwinrc --group Script-krohnkite --key screenGapRight 4
 kwriteconfig6 --file kwinrc --group Script-krohnkite --key screenGapTop 4
 
 # Set binary as the tiling method and disable others to avoid interference
-kwriteconfig6 --file kwinrc --group Script-krohnkite --key binaryTreeLayoutOrder 1
+kwriteconfig6 --file kwinrc --group Script-krohnkite --key quarterLayoutOrder 1
+kwriteconfig6 --file kwinrc --group Script-krohnkite --key binaryTreeLayoutOrder 2
+kwriteconfig6 --file kwinrc --group Script-krohnkite --key floatingLayoutOrder 3
 kwriteconfig6 --file kwinrc --group Script-krohnkite --key cascadeLayoutOrder 0
 kwriteconfig6 --file kwinrc --group Script-krohnkite --key columnsLayoutOrder 0
 kwriteconfig6 --file kwinrc --group Script-krohnkite --key monocleLayoutOrder 0
-kwriteconfig6 --file kwinrc --group Script-krohnkite --key quarterLayoutOrder 0
 kwriteconfig6 --file kwinrc --group Script-krohnkite --key spiralLayoutOrder 0
 kwriteconfig6 --file kwinrc --group Script-krohnkite --key spreadLayoutOrder 0
 kwriteconfig6 --file kwinrc --group Script-krohnkite --key stackedLayoutOrder 0
